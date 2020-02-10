@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="track_buttons">
+        <button class="track_btn" data-track="track1">Bohemian Rhapsody</button>
+        <button class="track_btn" data-track="track2">Heroes</button>
+      </div>
+      <div id="track_anzeige">
+
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(event) {
+        var track_buttons = document.getElementsByClassName('track_btn');
+        const track_anzeige = document.querySelector('#track_anzeige');
+        for(let i = 0; i < track_buttons.length; i++){
+          track_buttons[i].addEventListener("click", function(){
+            console.log(this.getAttribute("data-track"));
+            zeige_music_track(this.getAttribute("data-track"));
+          })
+        }
+        function zeige_music_track(track){
+          let url = "tracks/"+ track +".json";
+          fetch(url)
+            .then((response) => {
+              return response.text();
+            })
+            .then((data) => {
+              console.log(data);
+              //track_anzeige.innerHTML = track;
+              const track_obj = JSON.parse(data);
+              track_anzeige.innerHTML = "";
+              tracks_anzeige(track_obj);
+
+
+              //track_anzeige(data);
+            })
+            .catch(function(error) {
+              console.log('Error: ' + error.message);
+            });
+        }
+      });
+
+
+      function tracks_anzeige(track){
+        const track_anzeige = document.querySelector('#track_anzeige');
+
+        const titel_anzeige = document.createElement('h2');
+        titel_anzeige.textContent = track.titel;
+
+        const artist_anzeige = document.createElement('h3');
+        artist_anzeige.textContent = track.artist;
+
+        const label_liste = document.createElement('ul');
+        for(let i = 0; i < track.label.length; i++){
+          const label = document.createElement('li');
+          label.textContent = track.label[i];
+          label_liste.appendChild(label);
+        }
+
+        track_anzeige.appendChild(titel_anzeige);
+        track_anzeige.appendChild(artist_anzeige);
+        track_anzeige.appendChild(label_liste);
+
+      }
+    </script>
+  </body>
+</html>
